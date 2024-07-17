@@ -255,7 +255,7 @@
             document.getElementById('loader').style.display = 'inline-block';
             document.getElementById('output').textContent = '';
 
-            var url = 'https://karasuyam.onrender.com/runners/create';
+            var url = 'https://nodejs-ufn8.onrender.com/runners/create';
             var params = {
                 source_code: sourceCode,
                 language: language,
@@ -281,7 +281,7 @@
         }
 
         function pollResult(id) {
-            var url = 'https://karasuyam.onrender.com/runners/get_details';
+            var url = 'https://nodejs-ufn8.onrender.com/runners/get_details';
             var params = {
                 id: id,
                 api_key: 'guest'
