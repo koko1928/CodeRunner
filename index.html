@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/editor/editor.main.css">
     <style>
+        /* スタイルはそのまま */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -259,32 +260,38 @@
             var params = {
                 source_code: sourceCode,
                 language: language,
-                input: inputData,
-                api_key: 'guest'
+                input: inputData
             };
 
-            $.post(url, params, function(response) {
-                if (response.error) {
-                    alert('エラーが発生しました: ' + response.error);
-                    document.getElementById('loader').style.display = 'none';
-                    return;
-                }
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(params),
+                success: function(response) {
+                    if (response.error) {
+                        alert('エラーが発生しました: ' + response.error);
+                        document.getElementById('loader').style.display = 'none';
+                        return;
+                    }
 
-                var id = response.id;
-                setTimeout(function() {
-                    pollResult(id);
-                }, 2000);
-            }).fail(function() {
-                alert('コードの実行に失敗しました。');
-                document.getElementById('loader').style.display = 'none';
+                    var id = response.id;
+                    setTimeout(function() {
+                        pollResult(id);
+                    }, 2000);
+                },
+                error: function() {
+                    alert('コードの実行に失敗しました。');
+                    document.getElementById('loader').style.display = 'none';
+                }
             });
         }
 
         function pollResult(id) {
             var url = 'https://nodejs-ufn8.onrender.com/runners/get_details';
             var params = {
-                id: id,
-                api_key: 'guest'
+                id: id
             };
 
             $.get(url, params, function(result) {
