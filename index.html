@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Execution</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/editor/editor.main.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        #editor {
+            width: 100%;
+            min-height: 200px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #input_data {
+            width: calc(100% - 22px); /* 幅を調整 */
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            resize: none; /* リサイズ禁止 */
+        }
+        button {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .output-header h2 {
+            margin: 0;
+            flex: 1;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 20px;
+            height: 20px;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        pre {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            select, textarea, #editor, #input_data {
+                font-size: 14px;
+            }
+            button {
+                font-size: 14px;
+            }
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/loader.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>コード実行</h1>
+        <div class="form-group">
+            <label for="language">実行する言語:</label>
+            <select id="language" name="language" onchange="changeLanguage()">
+                <option value="c">C</option>
+                <option value="cpp">C++</option>
+                <option value="objective-c">Objective-C</option>
+                <option value="java">Java</option>
+                <option value="kotlin">Kotlin</option>
+                <option value="scala">Scala</option>
+                <option value="swift">Swift</option>
+                <option value="csharp">C#</option>
+                <option value="go">Go</option>
+                <option value="haskell">Haskell</option>
+                <option value="erlang">Erlang</option>
+                <option value="perl">Perl</option>
+                <option value="python">Python 2</option>
+                <option value="python3">Python 3</option>
+                <option value="ruby">Ruby</option>
+                <option value="php">PHP</option>
+                <option value="bash">Bash</option>
+                <option value="r">R</option>
+                <option value="javascript">JavaScript</option>
+                <option value="coffeescript">CoffeeScript</option>
+                <option value="vb">VB</option>
+                <option value="cobol">COBOL</option>
+                <option value="fsharp">F#</option>
+                <option value="d">D</option>
+                <option value="clojure">Clojure</option>
+                <option value="elixir">Elixir</option>
+                <option value="mysql">MySQL</option>
+                <option value="rust">Rust</option>
+                <option value="scheme">Scheme</option>
+                <option value="commonlisp">Common Lisp</option>
+                <option value="nadesiko">なでしこ</option>
+                <option value="typescript">TypeScript</option>
+                <option value="brainfuck">Brainfuck</option>
+                <option value="plain">Plain Text</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="source_code">実行するコード:</label>
+            <div id="editor"></div>
+        </div>
+        <div class="form-group">
+            <label for="input_data">標準入力:</label>
+            <textarea id="input_data" name="input_data" rows="4" cols="50"></textarea>
+        </div>
+        <button onclick="executeCode()">実行</button>
+        <div class="output-header">
+            <h2>結果</h2>
+            <div class="loader" id="loader" style="display: none;"></div>
+        </div>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        var editor;
+        var monacoLangMap = {
+            "c": "c",
+            "cpp": "cpp",
+            "objective-c": "objective-c",
+            "java": "java",
+            "kotlin": "kotlin",
+            "scala": "scala",
+            "swift": "swift",
+            "csharp": "csharp",
+            "go": "go",
+            "haskell": "haskell",
+            "erlang": "erlang",
+            "perl": "perl",
+            "python": "python",
+            "python3": "python",
+            "ruby": "ruby",
+            "php": "php",
+            "bash": "shell",
+            "r": "r",
+            "javascript": "javascript",
+            "coffeescript": "coffeescript",
+            "vb": "vb",
+            "cobol": "cobol",
+            "fsharp": "fsharp",
+            "d": "d",
+            "clojure": "clojure",
+            "elixir": "elixir",
+            "mysql": "sql",
+            "rust": "rust",
+            "scheme": "scheme",
+            "commonlisp": "lisp",
+            "nadesiko": "plaintext",
+            "typescript": "typescript",
+            "brainfuck": "plaintext",
+            "plain": "plaintext"
+        };
+
+        require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            editor = monaco.editor.create(document.getElementById('editor'), {
+                value: '',
+                language: 'javascript',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                minimap: {
+                    enabled: false
+                }
+            });
+        });
+
+        function changeLanguage() {
+            var language = document.getElementById('language').value;
+            monaco.editor.setModelLanguage(editor.getModel(), monacoLangMap[language]);
+        }
+
+        function executeCode() {
+            var language = document.getElementById('language').value;
+            var sourceCode = editor.getValue();
+            var inputData = document.getElementById('input_data').value;
+
+            if (!language || !sourceCode) {
+                alert('言語とコードを入力してください。');
+                return;
+            }
+
+            document.getElementById('loader').style.display = 'inline-block';
+            document.getElementById('output').textContent = '';
+
+            var url = 'http://api.paiza.io/runners/create';
+            var params = {
+                source_code: sourceCode,
+                language: language,
+                input: inputData,
+                api_key: 'guest'
+            };
+
+            $.post(url, params, function(response) {
+                if (response.error) {
+                    alert('エラーが発生しました: ' + response.error);
+                    document.getElementById('loader').style.display = 'none';
+                    return;
+                }
+
+                var id = response.id;
+                setTimeout(function() {
+                    pollResult(id);
+                }, 2000);
+            }).fail(function() {
+                alert('コードの実行に失敗しました。');
+                document.getElementById('loader').style.display = 'none';
+            });
+        }
+
+        function pollResult(id) {
+            var url = 'http://api.paiza.io/runners/get_details';
+            var params = {
+                id: id,
+                api_key: 'guest'
+            };
+
+            $.get(url, params, function(result) {
+                if (result.error) {
+                    alert('エラーが発生しました: ' + result.error);
+                    document.getElementById('loader').style.display = 'none';
+                    return;
+                }
+
+                var output = '';
+
+                output += '--stdout--\n' + (result.stdout || 'none') + '\n';
+                output += '--build_stderr--\n' + (result.build_stderr || 'none') + '\n';
+                output += '--stderr--\n' + (result.stderr || 'none') + '\n';
+
+                document.getElementById('output').textContent = output;
+                document.getElementById('loader').style.display = 'none';
+            }).fail(function() {
+                alert('結果の取得に失敗しました。');
+                document.getElementById('loader').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
