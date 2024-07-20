@@ -1,40 +1,3 @@
-const monacoLangMap = {
-    "c": "c",
-    "cpp": "cpp",
-    "objective-c": "objective-c",
-    "java": "java",
-    "kotlin": "kotlin",
-    "scala": "scala",
-    "swift": "swift",
-    "csharp": "csharp",
-    "go": "go",
-    "haskell": "haskell",
-    "erlang": "erlang",
-    "perl": "perl",
-    "python": "python",
-    "python3": "python",
-    "ruby": "ruby",
-    "php": "php",
-    "bash": "shell",
-    "r": "r",
-    "javascript": "javascript",
-    "coffeescript": "coffeescript",
-    "vb": "vb",
-    "cobol": "cobol",
-    "fsharp": "fsharp",
-    "d": "d",
-    "clojure": "clojure",
-    "elixir": "elixir",
-    "mysql": "sql",
-    "rust": "rust",
-    "scheme": "scheme",
-    "commonlisp": "lisp",
-    "nadesiko": "plaintext",
-    "typescript": "typescript",
-    "brainfuck": "plaintext",
-    "plain": "plaintext"
-};
-
 let editor;
 
 require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs' }});
@@ -46,15 +9,22 @@ require(['vs/editor/editor.main'], function() {
         automaticLayout: true,
         minimap: { enabled: false }
     });
+
+    changeUILanguage();
+    document.getElementById('language-select').addEventListener('change', changeUILanguage);
+    document.getElementById('language').addEventListener('change', changeLanguage);
 });
 
-function changeLanguage() {
-    const language = document.getElementById('language').value;
-    monaco.editor.setModelLanguage(editor.getModel(), monacoLangMap[language]);
+function changeUILanguage() {
+    const language = document.getElementById('language-select').value;
 
-    const uiLanguage = document.getElementById('language-select').value;
-    fetch(`/locales/${uiLanguage}/translation.json`)
-        .then(response => response.json())
+    fetch(`/locales/${language}/translation.json`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(translations => {
             document.getElementById('title').innerText = translations.title;
             document.getElementById('language-label').innerText = translations.languageLabel;
@@ -68,7 +38,10 @@ function changeLanguage() {
         })
         .catch(err => console.error('Error fetching translations:', err));
 }
-
+function changeLanguage() {
+    const language = document.getElementById('language').value;
+    monaco.editor.setModelLanguage(editor.getModel(), monacoLangMap[language]);
+}
 
 function executeCode() {
     const language = document.getElementById('language').value;
@@ -76,7 +49,7 @@ function executeCode() {
     const inputData = document.getElementById('input_data').value;
 
     if (!language || !sourceCode) {
-        alert('Please enter a language and code.');
+        alert('Please select a language and enter the code.');
         return;
     }
 
@@ -130,13 +103,43 @@ function pollResult(id) {
 
         document.getElementById('loader').style.display = 'none';
     }).fail(function() {
-        alert('Failed to retrieve results.');
+        alert('Failed to fetch results.');
         document.getElementById('loader').style.display = 'none';
     });
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-    changeLanguage();
-    document.getElementById('language-select').addEventListener('change', changeLanguage);
-});
-
+const monacoLangMap = {
+    "c": "c",
+    "cpp": "cpp",
+    "objective-c": "objective-c",
+    "java": "java",
+    "kotlin": "kotlin",
+    "scala": "scala",
+    "swift": "swift",
+    "csharp": "csharp",
+    "go": "go",
+    "haskell": "haskell",
+    "erlang": "erlang",
+    "perl": "perl",
+    "python": "python",
+    "python3": "python",
+    "ruby": "ruby",
+    "php": "php",
+    "bash": "shell",
+    "r": "r",
+    "javascript": "javascript",
+    "coffeescript": "coffeescript",
+    "vb": "vb",
+    "cobol": "cobol",
+    "fsharp": "fsharp",
+    "d": "d",
+    "clojure": "clojure",
+    "elixir": "elixir",
+    "mysql": "sql",
+    "rust": "rust",
+    "scheme": "scheme",
+    "commonlisp": "lisp",
+    "nadesiko": "plaintext",
+    "typescript": "typescript",
+    "brainfuck": "plaintext",
+    "plain": "plaintext"
+};
