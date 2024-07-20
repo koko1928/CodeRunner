@@ -1,0 +1,11 @@
+{
+  "title": "Code Runner",
+  "languageLabel": "プログラミング言語:",
+  "sourceCodeLabel": "ソースコード:",
+  "inputLabel": "標準入力:",
+  "executeButton": "実行",
+  "resultTitle": "結果",
+  "stdoutLabel": "出力",
+  "buildStderrLabel": "ビルドエラー",
+  "stderrLabel": "エラー"
+}
