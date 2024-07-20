@@ -18,7 +18,7 @@ require(['vs/editor/editor.main'], function() {
 function changeUILanguage() {
     const language = document.getElementById('language-select').value;
 
-    fetch(`/locales/${language}/translation.json`)
+    fetch(`https://koko1928.github.io/CodeRunner/locales/${language}/translation.json`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
