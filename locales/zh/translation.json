@@ -1,0 +1,11 @@
+{
+  "title": "Code Runner",
+  "languageLabel": "编程语言:",
+  "sourceCodeLabel": "源代码:",
+  "inputLabel": "输入:",
+  "executeButton": "执行",
+  "resultTitle": "结果",
+  "stdoutLabel": "输出",
+  "buildStderrLabel": "构建错误",
+  "stderrLabel": "错误"
+}
