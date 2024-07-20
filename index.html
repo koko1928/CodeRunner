@@ -145,12 +145,25 @@
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/loader.js"></script>
+    <script src="scripts/main.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <h1>Code Runner</h1>
+        <h1 id="title">Code Runner</h1>
         <div class="form-group">
-            <label for="language">実行する言語:</label>
+            <label for="language-select">Language:</label>
+            <select id="language-select" onchange="changeLanguage()">
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="zh">中文</option>
+                <!-- 他の言語もここに追加できます -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="language" id="language-label">Programming Language:</label>
             <select id="language" name="language" onchange="changeLanguage()">
                 <option value="c">C</option>
                 <option value="cpp">C++</option>
@@ -189,153 +202,32 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="source_code">実行するコード:</label>
+            <label for="source_code" id="source-code-label">Source Code:</label>
             <div id="editor"></div>
         </div>
         <div class="form-group">
-            <label for="input_data">標準入力:</label>
+            <label for="input_data" id="input-label">Input:</label>
             <textarea id="input_data" name="input_data" rows="4" cols="50"></textarea>
         </div>
-        <button onclick="executeCode()">実行</button>
+        <button onclick="executeCode()" id="execute-button">Execute</button>
         <div class="output-header">
-            <h2>結果</h2>
+            <h2 id="result-title">Result</h2>
             <div class="loader" id="loader" style="display: none;"></div>
         </div>
         <div id="output-section">
             <div class="output-block stdout" id="stdout-output" style="display: none;">
-                <i class="fas fa-terminal icon"></i> Output
+                <i class="fas fa-terminal icon"></i> <span id="stdout-label">Output</span>
                 <pre></pre>
             </div>
             <div class="output-block build_stderr" id="build_stderr-output" style="display: none;">
-                <i class="fas fa-exclamation-triangle icon"></i> Compile Error
+                <i class="fas fa-tools icon"></i> <span id="build-stderr-label">Build Error</span>
                 <pre></pre>
             </div>
             <div class="output-block stderr" id="stderr-output" style="display: none;">
-                <i class="fas fa-times-circle icon"></i> Runtime Error
+                <i class="fas fa-exclamation-triangle icon"></i> <span id="stderr-label">Error</span>
                 <pre></pre>
             </div>
         </div>
     </div>
-
-    <script>
-        let editor;
-        const monacoLangMap = {
-            "c": "c",
-            "cpp": "cpp",
-            "objective-c": "objective-c",
-            "java": "java",
-            "kotlin": "kotlin",
-            "scala": "scala",
-            "swift": "swift",
-            "csharp": "csharp",
-            "go": "go",
-            "haskell": "haskell",
-            "erlang": "erlang",
-            "perl": "perl",
-            "python": "python",
-            "python3": "python",
-            "ruby": "ruby",
-            "php": "php",
-            "bash": "shell",
-            "r": "r",
-            "javascript": "javascript",
-            "coffeescript": "coffeescript",
-            "vb": "vb",
-            "cobol": "cobol",
-            "fsharp": "fsharp",
-            "d": "d",
-            "clojure": "clojure",
-            "elixir": "elixir",
-            "mysql": "sql",
-            "rust": "rust",
-            "scheme": "scheme",
-            "commonlisp": "lisp",
-            "nadesiko": "plaintext",
-            "typescript": "typescript",
-            "brainfuck": "plaintext",
-            "plain": "plaintext"
-        };
-
-        require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs' }});
-        require(['vs/editor/editor.main'], function() {
-            editor = monaco.editor.create(document.getElementById('editor'), {
-                value: '',
-                language: 'javascript',
-                theme: 'vs-dark',
-                automaticLayout: true,
-                minimap: { enabled: false }
-            });
-        });
-
-        function changeLanguage() {
-            const language = document.getElementById('language').value;
-            monaco.editor.setModelLanguage(editor.getModel(), monacoLangMap[language]);
-        }
-
-        function executeCode() {
-            const language = document.getElementById('language').value;
-            const sourceCode = editor.getValue();
-            const inputData = document.getElementById('input_data').value;
-
-            if (!language || !sourceCode) {
-                alert('言語とコードを入力してください。');
-                return;
-            }
-
-            document.getElementById('loader').style.display = 'inline-block';
-            $('#stdout-output, #build_stderr-output, #stderr-output').hide();
-
-            const url = 'https://nodejs-ufn8.onrender.com/runners/create';
-            const params = { source_code: sourceCode, language: language, input: inputData };
-
-            $.ajax({
-                url: url,
-                type: 'POST',
-                contentType: 'application/json',
-                dataType: 'json',
-                data: JSON.stringify(params),
-                success: function(response) {
-                    if (response.error) {
-                        alert('エラーが発生しました: ' + response.error);
-                        document.getElementById('loader').style.display = 'none';
-                        return;
-                    }
-
-                    const id = response.id;
-                    setTimeout(() => pollResult(id), 2000);
-                },
-                error: function() {
-                    alert('コードの実行に失敗しました。');
-                    document.getElementById('loader').style.display = 'none';
-                }
-            });
-        }
-
-        function pollResult(id) {
-            const url = 'https://nodejs-ufn8.onrender.com/runners/get_details';
-            const params = { id: id };
-
-            $.get(url, params, function(result) {
-                if (result.error) {
-                    alert('エラーが発生しました: ' + result.error);
-                    document.getElementById('loader').style.display = 'none';
-                    return;
-                }
-
-                $('#stdout-output pre').text(result.stdout || '');
-                $('#build_stderr-output pre').text(result.build_stderr || '');
-                $('#stderr-output pre').text(result.stderr || '');
-
-                $('#stdout-output').toggle(!!result.stdout);
-                $('#build_stderr-output').toggle(!!result.build_stderr);
-                $('#stderr-output').toggle(!!result.stderr);
-
-                document.getElementById('loader').style.display = 'none';
-            }).fail(function() {
-                alert('結果の取得に失敗しました。');
-                document.getElementById('loader').style.display = 'none';
-            });
-        }
-    </script>
 </body>
 </html>
