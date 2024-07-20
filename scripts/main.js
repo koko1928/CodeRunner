@@ -65,8 +65,10 @@ function changeLanguage() {
             document.getElementById('stdout-label').innerText = translations.stdoutLabel;
             document.getElementById('build-stderr-label').innerText = translations.buildStderrLabel;
             document.getElementById('stderr-label').innerText = translations.stderrLabel;
-        });
+        })
+        .catch(err => console.error('Error fetching translations:', err));
 }
+
 
 function executeCode() {
     const language = document.getElementById('language').value;
@@ -133,4 +135,8 @@ function pollResult(id) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', changeLanguage);
+document.addEventListener('DOMContentLoaded', () => {
+    changeLanguage();
+    document.getElementById('language-select').addEventListener('change', changeLanguage);
+});
+
