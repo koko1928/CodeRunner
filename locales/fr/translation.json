@@ -1,0 +1,11 @@
+{
+  "title": "Code Runner",
+  "languageLabel": "Langage de Programmation:",
+  "sourceCodeLabel": "Code Source:",
+  "inputLabel": "Entrée:",
+  "executeButton": "Exécuter",
+  "resultTitle": "Résultat",
+  "stdoutLabel": "Sortie",
+  "buildStderrLabel": "Erreur de Compilation",
+  "stderrLabel": "Erreur"
+}
