@@ -1,5 +1,3 @@
-let editor;
-
 require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs' }});
 require(['vs/editor/editor.main'], function() {
     editor = monaco.editor.create(document.getElementById('editor'), {
@@ -13,6 +11,8 @@ require(['vs/editor/editor.main'], function() {
     changeUILanguage();
     document.getElementById('language-select').addEventListener('change', changeUILanguage);
     document.getElementById('language').addEventListener('change', changeLanguage);
+
+    window.addEventListener('resize', () => editor.layout());
 });
 
 function changeUILanguage() {
@@ -38,6 +38,7 @@ function changeUILanguage() {
         })
         .catch(err => console.error('Error fetching translations:', err));
 }
+
 function changeLanguage() {
     const language = document.getElementById('language').value;
     monaco.editor.setModelLanguage(editor.getModel(), monacoLangMap[language]);
@@ -107,6 +108,7 @@ function pollResult(id) {
         document.getElementById('loader').style.display = 'none';
     });
 }
+
 const monacoLangMap = {
     "c": "c",
     "cpp": "cpp",
