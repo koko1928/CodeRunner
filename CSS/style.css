@@ -28,6 +28,8 @@ body {
 
 h1 {
     text-align: center;
+    margin: 0;
+    padding-bottom: 20px;
 }
 
 .form-group {
@@ -40,7 +42,8 @@ label {
 }
 
 select,
-textarea {
+textarea,
+#input_data {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -58,13 +61,7 @@ textarea {
 }
 
 #input_data {
-    width: calc(100% - 22px);
     min-height: 150px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-    box-sizing: border-box;
     resize: none;
 }
 
@@ -78,6 +75,7 @@ button {
     cursor: pointer;
     font-size: 16px;
     margin-top: 10px;
+    width: 100%;
 }
 
 button:hover {
@@ -129,19 +127,9 @@ button:hover {
     border-top: 4px solid #3498db;
     width: 20px;
     height: 20px;
-    -webkit-animation: spin 1s linear infinite;
     animation: spin 1s linear infinite;
     display: inline-block;
     vertical-align: middle;
-}
-
-@-webkit-keyframes spin {
-    0% {
-        -webkit-transform: rotate(0deg);
-    }
-    100% {
-        -webkit-transform: rotate(360deg);
-    }
 }
 
 @keyframes spin {
