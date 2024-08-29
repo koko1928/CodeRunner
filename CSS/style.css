@@ -9,7 +9,7 @@ body {
     align-items: center;
     height: 100vh;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .container {
