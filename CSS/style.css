@@ -1,21 +1,21 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f9;
     color: #333;
-    margin: 0;
-    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     box-sizing: border-box;
-    overflow: auto;
 }
 
 .container {
     max-width: 800px;
     width: 100%;
-    min-height: 80vh;
     background: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -23,6 +23,7 @@ body {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    max-height: 80vh;
     overflow: auto;
 }
 
@@ -153,5 +154,11 @@ button:hover {
     }
     button {
         font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    #editor {
+        height: 300px;
     }
 }
