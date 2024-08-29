@@ -9,12 +9,13 @@ body {
     align-items: center;
     height: 100vh;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .container {
     max-width: 800px;
     width: 100%;
-    min-height: 600px;
+    min-height: 80vh;
     background: #fff;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -22,6 +23,7 @@ body {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    overflow: auto;
 }
 
 h1 {
@@ -49,7 +51,7 @@ textarea {
 
 #editor {
     width: 100%;
-    height: 400px;
+    height: 500px;
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 20px;
@@ -57,7 +59,7 @@ textarea {
 
 #input_data {
     width: calc(100% - 22px);
-    min-height: 100px;
+    min-height: 150px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
