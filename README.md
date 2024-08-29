@@ -67,7 +67,7 @@
 
 ## API Server Usage
 
-CodeRunner uses an external API server. You are free to use this API server for non-commercial purposes. If you wish to use it for commercial purposes or need further details, please get in touch. For more information, visit [this page](https://github.com/koko1928/coderunner/issues).
+CodeRunner utilizes an external API server that you are welcome to use for personal, non-commercial purposes. However, commercial use is not permitted. If you are interested in using the API server for commercial purposes or require additional details, please contact us. For more information, please visit [this page](https://github.com/koko1928/coderunner/issues/1).
 
 ## License
 
